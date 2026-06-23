@@ -144,14 +144,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BankingBabaApp() {
-    val videos = remember { mutableStateOf<List<Video>>(emptyList()) }
+    val videos = remember { mutableStateOf(emptyList<Video>()) }
     val isLoading = remember { mutableStateOf(true) }
-    val errorMessage = remember { mutableStateOf<String?>() }
+    val errorMessage = remember { mutableStateOf<String?>("") }
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         scope.launch {
             isLoading.value = true
-            errorMessage.value = null
+            errorMessage.value = ""
             try {
                 val result = withContext(Dispatchers.IO) { fetchRssFeed() }
                 videos.value = result
@@ -177,8 +177,8 @@ fun BankingBabaApp() {
                 isLoading.value -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = Black)
                 }
-                errorMessage.value != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(errorMessage.value ?: "", color = Gray600, fontSize = 16.sp)
+                errorMessage.value != null && errorMessage.value!!.isNotEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(errorMessage.value!!, color = Gray600, fontSize = 16.sp)
                 }
                 videos.value.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("No videos available", color = Gray600, fontSize = 16.sp)
